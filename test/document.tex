@@ -1,0 +1,59 @@
+% Die KOMA-Script Dokumentklasse "scrartcl" verwenden
+\documentclass[
+a4paper, % A4Papier
+11pt, % Schriftgröße 11
+parskip=half, % Halbe Zeile Abstand zwischen den Paragraphen
+headings=standardclasses, % Benutze Serifen Schriftart für Kapitel
+numbers=noenddot, % Kein Endpunkt bei der Numerierung der Kapitel
+headsepline, % Linie nach Kopfzeile
+captions=tableheading, % Abstand von Überschrift zu Tabelle
+ngerman % Sprache auf Deutsch umstellen
+]{scrartcl}
+
+% Encoding und Fonts
+\usepackage[utf8]{inputenc}	% Eingabe von Umlauten
+\usepackage[T1]{fontenc} % Verwenden von T1 Fonts
+\usepackage{lmodern,microtype} % Ersetzt alte Computer Modern Font mit neuem Latin Modern Font und verbessert Schriftbild
+
+% Sprache
+\usepackage[ngerman]{babel}	% Paket für Deutsche Sprachunterstützung
+
+% Mathe und Physik
+\usepackage[locale=DE,separate-uncertainty=true, per-mode=fraction,group-separator={}]{siunitx} % Paket um dimensionslose und dimensionsbehaftete Größen darzustellen
+\usepackage[tbtags]{mathtools} %Paket für Formelumgebungen
+\usepackage{amsfonts,amssymb,interval,physics} %Paket für Formelumgebungen und nützliche Erweiterungen für Physiker
+
+% Grafiken und Abbildungen
+\usepackage{graphicx,tikzpagenodes,caption,subcaption} % Paket um Grafiken einbetten zu können, beliebige Platzierung von Bildern und Abbildungsunterschriften anzupassen
+\usepackage{booktabs,multirow,makecell} % Verbesserte Tabellen
+\usepackage{lscape}
+
+\captionsetup{format=plain,labelfont={bf,sf}} % Ändere Bildunterschrift
+\captionsetup[wrapfigure]{belowskip=0pt,font=small}
+\setcellgapes{5pt} % Abstand zwischen Tabellen Zellen mit \makegapedcells
+
+% Verbesserungen
+\usepackage{xcolor,xurl} % Verschiedene Farben und besserer Schriftsatz für URLs
+\usepackage[all]{nowidow} % Schusterjungen etc. verhindern
+
+% Als Letztes laden
+\usepackage[colorlinks,linkcolor={red!50!black},citecolor={blue!50!black},urlcolor={blue!80!black}]{hyperref} % Hyperlinks im Dokument
+\usepackage[nameinlink,noabbrev,capitalise]{cleveref} % Verbesserte Referenzen
+\usepackage[margin=1in,includeheadfoot]{geometry} % Paket zum Einstellen der Seitenränder
+\usepackage{float} % Zur genauen Platzierung von Grafiken etc.
+\usepackage{wrapfig}
+\usepackage{xspace}
+
+\usepackage{pgfplots}
+%\usepackage[format=plain]{caption}
+
+\usepackage{rotating}
+
+\usepackage[ngerman]{babel}
+\usetikzlibrary {arrows.meta}
+\usepackage{tcolorbox}
+\begin{document}
+	\begin{align}
+		\Delta\left(\frac{a}{b}\right)=\sqrt{\frac{\Delta a^{2}}{b^{2}} + \frac{\Delta b^{2} a^{2}}{b^{4}}}=\sqrt{\frac{\left(\SI{0.1}{\meter}\right)^{2}}{\left(\SI{2.0}{\second}\right)^{2}} + \frac{\left(\SI{0.2}{\second}\right)^{2} \left(\SI{1.0}{\meter}\right)^{2}}{\left(\SI{2.0}{\second}\right)^{4}}}=\SI{0.08}{\meter\per\second}
+	\end{align}
+\end{document}
