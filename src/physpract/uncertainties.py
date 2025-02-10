@@ -336,7 +336,7 @@ class Value:
           subs = {}
           for value in values:
             subs[value.name] = sp.Symbol(f"\\left(\\SI{{{value.value.value}}}{{{sp.latex(value.unit)}}}\\right)" if value.unit is not None else f"\\left(\\num{{{value.value.value}}}\\right)")
-            subs[sp.Symbol("\Delta " + str(value.name))] = sp.Symbol(f"\\left(\\SI{{{value.value.uncertainty}}}{{{sp.latex(value.unit)}}}\\right)" if value.unit is not None else f"\\left(\\num{{{value.value.uncertainty}}}\\right)")
+            subs[sp.Symbol("\\Delta " + str(value.name))] = sp.Symbol(f"\\left(\\SI{{{value.value.uncertainty}}}{{{sp.latex(value.unit)}}}\\right)" if value.unit is not None else f"\\left(\\num{{{value.value.uncertainty}}}\\right)")
           parts = r"\Delta\left(" + sp.latex(self.context.context.variable.name) + r"\right)", sp.latex(self.context.func), sp.latex(self.context.func.subs(subs)), (r"\SI{" + self.context.context.uncertainty.value + r"}{" + sp.latex(self.context.context.variable.unit) + r"}" if self.context.context.variable.unit is not None else r"\num{" + self.context.context.uncertainty.value + r"}")
         
         p = re.compile(r"(\\left\(){2}(.*?)(\\right\) ?){2}")
@@ -369,7 +369,7 @@ class Value:
       if len(variables) == 0:
         return 0
       
-      func = sp.sqrt(sum([sp.diff(f, variable)**2 * sp.Symbol(f"\Delta {str(variable)}")**2 for variable in variables]))
+      func = sp.sqrt(sum([sp.diff(f, variable)**2 * sp.Symbol(f"\\Delta {str(variable)}")**2 for variable in variables]))
 
       values = list(filter(lambda x: x.name in variables, self.context.variable.variables))
 
