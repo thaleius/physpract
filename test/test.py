@@ -3,7 +3,7 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from physpract.uncertainties import Value
-from physpract.mmath import *
+from physpract.math import *
 
 from sympy.physics import units
 
