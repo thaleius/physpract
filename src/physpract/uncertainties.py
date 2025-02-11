@@ -413,7 +413,7 @@ class Value:
     elif type(value) == AffineScalarFunc:
       self.ufloat = value
     else:
-      raise TypeError("Uncertainty must be specified if value is a float, otherwise it must be None when value is a ufloat")
+      raise TypeError("Uncertainty must be specified if the value is of type float, otherwise it must be None if the value is of type ufloat")
     
     self.value_not_rounded = self.ufloat.nominal_value
     self.vnr = self.value_not_rounded
