@@ -35,6 +35,8 @@ c = a + b
 # Print the value
 print(c)
 # Output: 3.00 ± 0.23
+print(c.eq())
+# Output: x_0 + x_1 = 3.00 ± 0.23
 
 # Print the value and the uncertainty
 print(c.value, c.uncertainty)
@@ -59,6 +61,9 @@ b = Value(2, 0.2, "b")
 
 c = a + b
 print(c)
+# Output: a + b = 3.00 ± 0.23
+
+print(c.eq())
 # Output: a + b = 3.00 ± 0.23
 ```
 
