@@ -35,6 +35,8 @@ class Value:
 class Variable:
   pass
 
+used_variables: list[str] = []
+
 class Variable:
   def __init__(self, name: sp.Symbol | sp.Function | Variable = None, unit: units.Quantity | None = None, value = None, variables: list[Variable] | None = None):
     # unit
@@ -46,11 +48,24 @@ class Variable:
       self.unit = unit
 
     self.variables = [self] if variables is None else variables
+    for variable in self.variables:
+      if hasattr(variable, "name") and variable.name is not None and variable.name not in used_variables:
+        used_variables.append(str(variable.name))
     
     # variable
     if name is None:
-      self.name = None
+      # generate a new variable
+      i = 0
+      while True:
+        if f"x_{i}" in used_variables:
+          i += 1
+        else:
+          break
+      name = f"x_{i}"
+      used_variables.append(name)   
+      self.name = sp.Symbol(name)   
     elif type(name) == str:
+      used_variables.append(name)
       self.name = sp.Symbol(name)
     elif type(name) == Variable:
       self.name = name.name
@@ -59,6 +74,9 @@ class Variable:
     else:
       self.name = name
 
+    if self.name not in used_variables:
+      used_variables.append(str(self.name))
+
     self.value = value
 
   def __str__(self):
@@ -66,78 +84,93 @@ class Variable:
   
   def checkIfNone(self, *args):
     for arg in args:
-      if arg is None:
-        return False
+      if type(arg) == Variable:
+        return arg.name is not None
+      return arg is not None
   
   def __add__(self, other: Variable) -> Variable:
     if self.unit != other.unit:
       raise ValueError("Units do not match")
-    if self.checkIfNone(self.name, other.name) is False:
+    if self.checkIfNone(self, other) is False:
       return None
 
-    return Variable(self.name + other.name, self.unit, variables=self.variables + other.variables)
+    if type(other) == Variable:
+      return Variable(self.name + other.name, self.unit, variables=self.variables + other.variables)
+    return Variable(self.name + other, self.unit, variables=self.variables)
   
   def __sub__(self, other: Variable) -> Variable:
     if self.unit != other.unit:
       raise ValueError("Units do not match")
-    if self.checkIfNone(self.name, other.name) is False:
+    if self.checkIfNone(self, other) is False:
       return None
 
-    return Variable(self.name - other.name, self.unit, variables=self.variables + other.variables)
+    if type(other) == Variable:
+      return Variable(self.name - other.name, self.unit, variables=self.variables + other.variables)
+    return Variable(self.name - other, self.unit, variables=self.variables)
   
   def __mul__(self, other: Variable) -> Variable:
-    if self.checkIfNone(self.name, other.name) is False:
+    if self.checkIfNone(self, other) is False:
       return None
 
-    unit = self.unit * other.unit if self.unit is not None and other.unit is not None else None
-
-    return Variable(self.name * other.name, unit, variables=self.variables + other.variables)
+    if type(other) == Variable:
+      unit = self.unit * other.unit if self.unit is not None and other.unit is not None else None
+      return Variable(self.name * other.name, unit, variables=self.variables + other.variables)
+    return Variable(self.name * other, self.unit, variables=self.variables)
   
   def __truediv__(self, other: Variable) -> Variable:
-    if self.checkIfNone(self.name, other.name) is False:
+    if self.checkIfNone(self, other) is False:
       return None
 
-    unit = self.unit / other.unit if self.unit is not None and other.unit is not None else None
-
-    return Variable(self.name / other.name, unit, variables=self.variables + other.variables)
+    if type(other) == Variable:
+      unit = self.unit / other.unit if self.unit is not None and other.unit is not None else None
+      return Variable(self.name / other.name, unit, variables=self.variables + other.variables)
+    return Variable(self.name / other, self.unit, variables=self.variables)
   
   def __pow__(self, other: int | float) -> Variable:
-    if self.checkIfNone(self.name, other.name) is False:
+    if self.checkIfNone(self, other) is False:
       return None
 
-    return Variable(self.name ** other, self.unit ** other if self.unit is not None else None, variables=self.variables + other.variables)
+    if type(other) == Variable:
+      return Variable(self.name ** other, self.unit ** other if self.unit is not None else None, variables=self.variables + other.variables)
+    return Variable(self.name ** other, self.unit ** other if self.unit is not None else None, variables=self.variables)
   
   def __radd__(self, other: Variable) -> Variable:
     if self.unit != other.unit:
       raise ValueError("Units do not match")
-    if self.checkIfNone(self.name, other.name) is False:
+    if self.checkIfNone(self, other) is False:
       return None
 
-    return Variable(other.name + self.name, self.unit, variables=self.variables + other.variables)
+    if type(other) == Variable:
+      return Variable(other.name + self.name, self.unit, variables=self.variables + other.variables)
+    return Variable(other + self.name, self.unit, variables=self.variables)
   
   def __rsub__(self, other: Variable) -> Variable:
     if self.unit != other.unit:
       raise ValueError("Units do not match")
-    if self.checkIfNone(self.name, other.name) is False:
+    if self.checkIfNone(self, other) is False:
       return None
 
-    return Variable(other.name - self.name,self.unit, variables=self.variables + other.variables)
+    if type(other) == Variable:
+      return Variable(other.name - self.name,self.unit, variables=self.variables + other.variables)
+    return Variable(other - self.name, self.unit, variables=self.variables)
   
   def __rmul__(self, other: Variable) -> Variable:
-    if self.checkIfNone(self.name, other.name) is False:
+    if self.checkIfNone(self, other) is False:
       return None
 
-    unit = self.unit * other.unit if self.unit is not None and other.unit is not None else None
-
-    return Variable(other.name * self.name, unit, variables=self.variables + other.variables)
+    if type(other) == Variable:
+      unit = self.unit * other.unit if self.unit is not None and other.unit is not None else None
+      return Variable(other.name * self.name, unit, variables=self.variables + other.variables)
+    return Variable(other * self.name, self.unit, variables=self.variables)
   
   def __rtruediv__(self, other: Variable) -> Variable:
-    if self.checkIfNone(self.name, other.name) is False:
+    if self.checkIfNone(self, other) is False:
       return None
 
-    unit = self.unit / other.unit if self.unit is not None and other.unit is not None else None
-
-    return Variable(other.name / self.name, unit, variables=self.variables + other.variables)
+    if type(other) == Variable:
+      unit = self.unit / other.unit if self.unit is not None and other.unit is not None else None
+      return Variable(other.name / self.name, unit, variables=self.variables + other.variables)
+    return Variable(other / self.name, self.unit, variables=self.variables)
   
   def __abs__(self) -> Variable:
     return Variable(abs(self.name), self.unit, variables=self.variables)
@@ -212,35 +245,55 @@ class Variable:
     return Variable(sp.log(self.name), sp.log(self.unit) if self.unit is not None else None, variables=self.variables)
 
 class Value:
-  def __add__(self, other: Value) -> Value:
-    return Value(self.ufloat + other.ufloat, variable=self.variable + other.variable)
+  def __add__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(self.ufloat + other.ufloat, variable=self.variable + other.variable)
+    return Value(self.ufloat + other, variable=self.variable + other)
 
-  def __sub__(self, other: Value) -> Value:
-    return Value(self.ufloat - other.ufloat, variable=self.variable - other.variable)
+  def __sub__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(self.ufloat - other.ufloat, variable=self.variable - other.variable)
+    return Value(self.ufloat - other, variable=self.variable - other)
   
-  def __mul__(self, other: Value) -> Value:
-    return Value(self.ufloat * other.ufloat, variable=self.variable * other.variable)
+  def __mul__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(self.ufloat * other.ufloat, variable=self.variable * other.variable)
+    return Value(self.ufloat * other, variable=self.variable * other)
   
-  def __truediv__(self, other: Value) -> Value:
-    return Value(self.ufloat / other.ufloat, variable=self.variable / other.variable)
+  def __truediv__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(self.ufloat / other.ufloat, variable=self.variable / other.variable)
+    return Value(self.ufloat / other, variable=self.variable / other)
   
-  def __pow__(self, other: Value) -> Value:
-    return Value(self.ufloat ** other.ufloat, variable=self.variable ** other.variable)
+  def __pow__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(self.ufloat ** other.ufloat, variable=self.variable ** other.variable)
+    return Value(self.ufloat ** other, variable=self.variable ** other)
   
-  def __radd__(self, other: Value) -> Value:
-    return Value(other.ufloat + self.ufloat, variable=other.variable + self.variable)
+  def __radd__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(other.ufloat + self.ufloat, variable=other.variable + self.variable)
+    return Value(other + self.ufloat, variable=other + self.variable)
   
-  def __rsub__(self, other: Value) -> Value:
-    return Value(other.ufloat - self.ufloat, variable=other.variable - self.variable)
+  def __rsub__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(other.ufloat - self.ufloat, variable=other.variable - self.variable)
+    return Value(other - self.ufloat, variable=other - self.variable)
   
-  def __rmul__(self, other: Value) -> Value:
-    return Value(other.ufloat * self.ufloat, variable=other.variable * self.variable)
+  def __rmul__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(other.ufloat * self.ufloat, variable=other.variable * self.variable)
+    return Value(other * self.ufloat, variable=other * self.variable)
   
-  def __rtruediv__(self, other: Value) -> Value:
-    return Value(other.ufloat / self.ufloat, variable=other.variable / self.variable)
+  def __rtruediv__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(other.ufloat / self.ufloat, variable=other.variable / self.variable)
+    return Value(other / self.ufloat, variable=other / self.variable)
   
-  def __rpow__(self, other: Value) -> Value:
-    return Value(other.ufloat ** self.ufloat, variable=other.variable ** self.variable)
+  def __rpow__(self, other) -> Value:
+    if type(other) == Value:
+      return Value(other.ufloat ** self.ufloat, variable=other.variable ** self.variable)
+    return Value(other ** self.ufloat, variable=other ** self.variable)
   
   def __abs__(self) -> Value:
     return Value(u.abs(self.ufloat), variable=abs(self.variable))
@@ -408,31 +461,43 @@ class Value:
     self.v = self.value
   
   def __init__(self, value: double | Value, uncertainty: double | None = None, variable: str | None = None, unit: None  = None):
+    self.noUnc = False
     if type(value) in [float, int] and type(uncertainty) in [float, int]:
       self.ufloat = ufloat(value, uncertainty)
     elif type(value) == AffineScalarFunc:
       self.ufloat = value
     else:
-      raise TypeError("Uncertainty must be specified if the value is of type float, otherwise it must be None if the value is of type ufloat")
+      self.ufloat = value
+      self.noUnc = True
+      # raise TypeError("Uncertainty must be specified if the value is of type float, otherwise it must be None if the value is of type ufloat")
     
-    self.value_not_rounded = self.ufloat.nominal_value
-    self.vnr = self.value_not_rounded
-    self.uncertainty_not_rounded = self.ufloat.std_dev
-    self.unr = self.uncertainty_not_rounded
+    if not self.noUnc:
+      self.value_not_rounded = self.ufloat.nominal_value
+      self.vnr = self.value_not_rounded
+      self.uncertainty_not_rounded = self.ufloat.std_dev
+      self.unr = self.uncertainty_not_rounded
 
-    self.round()
+      self.round()
 
     self.variable = Variable(variable, unit, self)
 
   def __str__(self):
-    return (f"{self.variable.name} = " if self.variable.name is not None else "") + f"{self.value} ± {self.uncertainty}" + (f" {self.variable.unit}" if self.variable.unit is not None else "")
+    if self.noUnc:
+      return f"{self.value}" + (f" {self.variable.unit}" if self.variable.unit is not None else "")
+    return f"{self.value} ± {self.uncertainty}" + (f" {self.variable.unit}" if self.variable.unit is not None else "")
+  
+  def eq(self):
+    if self.noUnc:
+      return f"{self.variable.name} = " + f"{self.value}" + (f" {self.variable.unit}" if self.variable.unit is not None else "")
+    return f"{self.variable.name} = " + f"{self.value} ± {self.uncertainty}" + (f" {self.variable.unit}" if self.variable.unit is not None else "")
   
   def latex(self, equation=False):
     e = ""
+    unc = "" if self.noUnc else f"({self.uncertainty_b})"
     if equation:
-      e = (f"{sp.latex(self.variable.name)}=" if self.variable.name is not None else "") + (f"\\SI{{{self.value}({self.uncertainty_b})}}{{{sp.latex(self.variable.unit)}}}" if self.variable.unit is not None else f"\\num{{{self.value}({self.uncertainty_b})}}")
+      e = f"{sp.latex(self.variable.name)}=" + (f"\\SI{{{self.value}{unc}}}{{{sp.latex(self.variable.unit)}}}" if self.variable.unit is not None else f"\\num{{{self.value}{unc}}}")
     else:
-      e = f"\\SI{{{self.value}({self.uncertainty_b})}}{{{sp.latex(self.variable.unit)}}}" if self.variable.unit is not None else f"\\num{{{self.value}({self.uncertainty_b})}}"
+      e = f"\\SI{{{self.value}{unc}}}{{{sp.latex(self.variable.unit)}}}" if self.variable.unit is not None else f"\\num{{{self.value}{unc}}}"
     return string_processing(e)
 
   def __repr__(self):
