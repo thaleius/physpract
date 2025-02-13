@@ -60,8 +60,9 @@ a = Value(1, 0.1, "a")
 b = Value(2, 0.2, "b")
 
 c = a + b
+
 print(c)
-# Output: a + b = 3.00 ± 0.23
+# Output: 3.00 ± 0.23
 
 print(c.eq())
 # Output: a + b = 3.00 ± 0.23
@@ -80,6 +81,9 @@ c = a/b
 
 # Print the value
 print(c)
+# Output: 0.50 ± 0.08 meter/second
+
+print(c.eq())
 # Output: a/b = 0.50 ± 0.08 meter/second
 ```
 
