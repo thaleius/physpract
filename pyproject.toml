@@ -1,6 +1,6 @@
 [project]
 name = "physpract"
-version = "0.2.0b0"
+version = "0.2.0b1"
 authors = [
   { name="Thaleius", email="dev@thaleius.de" },
 ]
