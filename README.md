@@ -1,5 +1,10 @@
 # Description
-This is a package primarily created to help with writing the protocols for the physical practicals at the TU Berlin, created by a student, who was tired of writing the long equations to show the calculation of uncertainties. To calculate the uncertainties, the package uses the gaussian error propagation.
+This package was primarily developed to assist in calculating and writing the [estimated standard deviation](https://en.wikipedia.org/wiki/Propagation_of_uncertainty#Simplification) according to Gaussian error propagation in LaTex. To calculate the uncertainties, the package uses the gaussian error propagation.
+
+Rounding follows the following scheme:
+- If the first non-zero digit of the standard deviation is greater than two and is followed by further digits, this digit is rounded up.
+- Otherwise, the subsequent digit is rounded up.
+- The value is then rounded to the next even number at the same digit.
 
 The package is still in development and will be updated with more features in the future.
 
