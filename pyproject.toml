@@ -1,0 +1,31 @@
+[project]
+name = "physpract"
+version = "0.1.0b1"
+authors = [
+  { name="Thaleius", email="dev@thaleius.de" },
+]
+description = "A package created to help with writing the protocols for the physical practicals at the TU Berlin."
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+  "numpy>=1.26.4",
+  "uncertainties>=3.1.7",
+  "sympy>=1.12",
+  "regex>=2024.4.28"
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Education",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+license = { text = "MIT" }
+
+[project.urls]
+Homepage = "https://github.com/thaleius/physpract"
+Issues = "https://github.com/thaleius/physpract/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
