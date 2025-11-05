@@ -1,1 +1,1 @@
-from .uncertainties import Value, sqrt
+from .uncertainties import Value, sqrt, lambertw
