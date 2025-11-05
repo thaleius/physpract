@@ -34,6 +34,8 @@ def getSignificantFigures(uncertainty):
     return unc, exp
 
 def roundToSignificantFigures(value, uncertainty) -> tuple[Decimal, Decimal]:
+    if uncertainty == 0:
+        return value, uncertainty
     unc, pos = getSignificantFigures(uncertainty)
     if type(value) != Decimal:
         value = Decimal(value)
