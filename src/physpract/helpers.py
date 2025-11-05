@@ -15,9 +15,9 @@ def getSignificantFigures(uncertainty):
     digits = list(digits)
 
     # remove trailing zeros and adjust exponent
-    while len(digits) > 0 and digits[-1] == 0:
-        digits.pop()
-        exp += 1
+    # while len(digits) > 0 and digits[-1] == 0:
+    #     digits.pop()
+    #     exp += 1
 
     unc = None
     if len(digits) == 1:
@@ -40,7 +40,7 @@ def roundToSignificantFigures(value, uncertainty) -> tuple[Decimal, Decimal]:
     if type(value) != Decimal:
         value = Decimal(value)
     rounded_uncertainty = unc
-    rounded_value = value.quantize(Decimal('1e{}'.format(pos))) 
+    rounded_value = value.quantize(Decimal('1e{}'.format(pos)))
     return rounded_value, rounded_uncertainty
 
 def to_non_scientific_string(value: Decimal) -> str:
