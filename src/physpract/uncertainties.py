@@ -104,8 +104,8 @@ class Value:
     tuple = rounded_value.as_tuple()
     value = to_non_scientific_string(rounded_value)
     s = ""
-    if abs(tuple.exponent) >= 3:
-      correct = tuple.exponent+len(tuple.digits)-1
+    correct = tuple.exponent+len(tuple.digits)-1
+    if abs(tuple.exponent) >= 3 and correct > 1:
       s = f"{rounded_value.scaleb(-correct)}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})e{correct}"
     else:
       s = f"{value}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})"
