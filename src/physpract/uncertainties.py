@@ -87,12 +87,12 @@ class Value:
   def __str__(self):
     rounded_value, rounded_uncertainty = roundToSignificantFigures(self.value, self.uncertainty)
     tuple = rounded_value.as_tuple()
-    if abs(tuple.exponent) >= 6:
+    if abs(tuple.exponent) >= 3:
       # uncertainty = ''.join(map(str, rounded_uncertainty.as_tuple().digits))
       correct = tuple.exponent+len(tuple.digits)-1
       value = rounded_value.scaleb(-correct)
       uncertainty = rounded_uncertainty.scaleb(-correct)
-      s = f"({value}±{uncertainty})e{correct}"
+      s = f"({value}±{uncertainty})⋅10^{{{correct}}}"
     else:
       s = f"{to_non_scientific_string(rounded_value)}±{to_non_scientific_string(rounded_uncertainty)}"
     if self.unit:
@@ -104,7 +104,7 @@ class Value:
     tuple = rounded_value.as_tuple()
     value = to_non_scientific_string(rounded_value)
     s = ""
-    if abs(tuple.exponent) >= 6:
+    if abs(tuple.exponent) >= 3:
       correct = tuple.exponent+len(tuple.digits)-1
       s = f"{rounded_value.scaleb(-correct)}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})e{correct}"
     else:
