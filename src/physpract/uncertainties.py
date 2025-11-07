@@ -76,6 +76,11 @@ class Value:
     v.history = (self.history, 'neg')
     return v
   
+  def __abs__(self):
+    v = Value(abs(self.value), self.uncertainty)
+    v.history = (self.history, 'abs')
+    return v
+  
   def __pow__(self, power):
     a, b = check(self, power)
     v = Value(self.value ** b.value, a.value**b.value * (b.value/a.value*a.uncertainty + (Decimal(m.log(a.value))*b.uncertainty if b.uncertainty != 0 else 0)))
