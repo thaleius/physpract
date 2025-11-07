@@ -92,9 +92,12 @@ class Value:
       correct = tuple.exponent+len(tuple.digits)-1
       value = rounded_value.scaleb(-correct)
       uncertainty = rounded_uncertainty.scaleb(-correct)
-      s = f"({value}±{uncertainty})⋅10^{{{correct}}}"
+      if uncertainty == 0:
+        s = f"{value} ⋅ 10^{{{correct}}}"
+      else:
+        s = f"({value}±{uncertainty}) ⋅ 10^{{{correct}}}"
     else:
-      s = f"{to_non_scientific_string(rounded_value)}±{to_non_scientific_string(rounded_uncertainty)}"
+      s = f"{to_non_scientific_string(rounded_value)}" + f"±{to_non_scientific_string(rounded_uncertainty)}" if rounded_uncertainty != 0 else ""
     if self.unit:
       s = f"({s}) {self.unit}"
     return s
@@ -106,9 +109,15 @@ class Value:
     s = ""
     correct = tuple.exponent+len(tuple.digits)-1
     if abs(tuple.exponent) >= 3 and correct > 1:
-      s = f"{rounded_value.scaleb(-correct)}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})e{correct}"
+      if rounded_uncertainty == 0:
+        s = f"{rounded_value.scaleb(-correct)}e{correct}"
+      else:
+        s = f"{rounded_value.scaleb(-correct)}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})e{correct}"
     else:
-      s = f"{value}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})"
+      if rounded_uncertainty == 0:
+        s = f"{value}"
+      else:
+        s = f"{value}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})"
     if self.unit and unit:
-      s = f"({s} {self.unit})"
+      s = f"({s}) {self.unit}"
     return s
