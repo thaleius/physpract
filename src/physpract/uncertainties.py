@@ -22,8 +22,9 @@ class Value:
     self.history = self
 
   def set_unit(self, unit: str):
-    self.unit = unit
-    return self
+    v = Value(self.value, self.uncertainty)
+    v.unit = unit
+    return v
   
   def __add__(self, other):
     a, b = check(self, other)
@@ -97,9 +98,9 @@ class Value:
       else:
         s = f"({value}±{uncertainty}) ⋅ 10^{{{correct}}}"
     else:
-      s = f"{to_non_scientific_string(rounded_value)}" + f"±{to_non_scientific_string(rounded_uncertainty)}" if rounded_uncertainty != 0 else ""
+      s = f"{to_non_scientific_string(rounded_value)}" + (f"±{to_non_scientific_string(rounded_uncertainty)}" if rounded_uncertainty != 0 else "")
     if self.unit:
-      s = f"({s}) {self.unit}"
+      s = f"{s} {self.unit}"
     return s
 
   def short(self, unit: bool = True) -> str:
@@ -119,5 +120,5 @@ class Value:
       else:
         s = f"{value}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})"
     if self.unit and unit:
-      s = f"({s}) {self.unit}"
+      s = f"{s} {self.unit}"
     return s
