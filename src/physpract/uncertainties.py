@@ -103,17 +103,19 @@ class Value:
       s = f"{s} {self.unit}"
     return s
 
-  def short(self, unit: bool = True) -> str:
+  def short(self, unit: bool = True, predecimals: int = 3) -> str:
     rounded_value, rounded_uncertainty = roundToSignificantFigures(self.value, self.uncertainty)
     tuple = rounded_value.as_tuple()
     value = to_non_scientific_string(rounded_value)
     s = ""
     correct = tuple.exponent+len(tuple.digits)-1
     if abs(correct) >= 1:
+      if correct > 0:
+        correct -= predecimals - 1
       if rounded_uncertainty == 0:
         s = f"{rounded_value.scaleb(-correct)}e{correct}"
       else:
-        s = f"{rounded_value.scaleb(-correct)}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})e{correct}"
+        s = f"{rounded_value.scaleb(-correct)}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})" + (f"e{correct}" if correct != 0 else "")
     else:
       if rounded_uncertainty == 0:
         s = f"{value}"
