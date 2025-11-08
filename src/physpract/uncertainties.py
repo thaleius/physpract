@@ -120,12 +120,12 @@ class Value:
       if rounded_uncertainty == 0:
         s = f"{rounded_value.scaleb(-correct)}e{correct}"
       else:
-        s = f"{to_non_scientific_string(rounded_value.scaleb(-correct))}({bracket_notation(rounded_uncertainty)})" + (f"e{correct}" if correct != 0 else "")
+        s = f"{to_non_scientific_string(rounded_value.scaleb(-correct))}({bracket_notation(rounded_value, rounded_uncertainty)})" + (f"e{correct}" if correct != 0 else "")
     else:
       if rounded_uncertainty == 0:
         s = f"{value}"
       else:
-        s = f"{value}({bracket_notation(rounded_uncertainty)})"
+        s = f"{value}({bracket_notation(rounded_value, rounded_uncertainty)})"
     if self.unit and unit:
       s = f"{s} {self.unit}"
     return s
