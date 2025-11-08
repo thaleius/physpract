@@ -47,3 +47,6 @@ def roundToSignificantFigures(value, uncertainty) -> tuple[Decimal, Decimal]:
 def to_non_scientific_string(value: Decimal) -> str:
     exp = value.as_tuple().exponent
     return f'{value:.{abs(exp) if exp < 0 else 0}f}'
+
+def bracket_notation(uncertainty: Decimal, correction: int = 0) -> str:
+    return to_non_scientific_string(uncertainty.scaleb(-uncertainty.as_tuple().exponent) if uncertainty.as_tuple().exponent < correction else uncertainty)

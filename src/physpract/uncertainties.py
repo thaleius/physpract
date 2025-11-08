@@ -1,6 +1,6 @@
 from decimal import Decimal
 import math as m
-from .helpers import roundToSignificantFigures, to_non_scientific_string
+from .helpers import bracket_notation, roundToSignificantFigures, to_non_scientific_string
 
 class Value:
   pass
@@ -120,12 +120,12 @@ class Value:
       if rounded_uncertainty == 0:
         s = f"{rounded_value.scaleb(-correct)}e{correct}"
       else:
-        s = f"{to_non_scientific_string(rounded_value.scaleb(-correct))}({to_non_scientific_string(rounded_uncertainty.scaleb(-rounded_uncertainty.as_tuple().exponent))})" + (f"e{correct}" if correct != 0 else "")
+        s = f"{to_non_scientific_string(rounded_value.scaleb(-correct))}({bracket_notation(rounded_uncertainty, correct)})" + (f"e{correct}" if correct != 0 else "")
     else:
       if rounded_uncertainty == 0:
         s = f"{value}"
       else:
-        s = f"{value}({to_non_scientific_string(rounded_uncertainty.scaleb(-rounded_uncertainty.as_tuple().exponent))})"
+        s = f"{value}({bracket_notation(rounded_uncertainty)})"
     if self.unit and unit:
       s = f"{s} {self.unit}"
     return s
