@@ -108,7 +108,7 @@ class Value:
       s = f"{s} {self.unit}"
     return s
 
-  def short(self, unit: bool = True, predecimals: int = 3) -> str:
+  def short(self, unit: bool = True, predecimals: int = 1) -> str:
     rounded_value, rounded_uncertainty = roundToSignificantFigures(self.value, self.uncertainty)
     tuple = rounded_value.as_tuple()
     value = to_non_scientific_string(rounded_value)
