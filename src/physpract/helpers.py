@@ -20,7 +20,7 @@ def getSignificantFigures(uncertainty):
     #     exp += 1
 
     unc = None
-    if len(digits) == 1 or ((digits[0] == 1 or digits[0] == 2) and sum(digits[1:]) == 0):
+    if len(digits) == 1 or sum(digits[1:]) == 0:
         unc = Decimal(DecimalTuple(sign=0, digits=digits, exponent=exp))
     else:
         if digits[0] == 1 or digits[0] == 2:
