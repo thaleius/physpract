@@ -120,12 +120,12 @@ class Value:
       if rounded_uncertainty == 0:
         s = f"{rounded_value.scaleb(-correct)}e{correct}"
       else:
-        s = f"{rounded_value.scaleb(-correct)}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})" + (f"e{correct}" if correct != 0 else "")
+        s = f"{to_non_scientific_string(rounded_value.scaleb(-correct))}({to_non_scientific_string(rounded_uncertainty.scaleb(-rounded_uncertainty.as_tuple().exponent))})" + (f"e{correct}" if correct != 0 else "")
     else:
       if rounded_uncertainty == 0:
         s = f"{value}"
       else:
-        s = f"{value}({''.join(map(str, rounded_uncertainty.as_tuple().digits))})"
+        s = f"{value}({to_non_scientific_string(rounded_uncertainty.scaleb(-rounded_uncertainty.as_tuple().exponent))})"
     if self.unit and unit:
       s = f"{s} {self.unit}"
     return s
