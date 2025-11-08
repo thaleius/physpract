@@ -20,13 +20,14 @@ def getSignificantFigures(uncertainty):
     #     exp += 1
 
     unc = None
-    if len(digits) == 1:
+    if len(digits) == 1 or ((digits[0] == 1 or digits[0] == 2) and sum(digits[1:]) == 0):
         unc = Decimal(DecimalTuple(sign=0, digits=digits, exponent=exp))
     else:
         if digits[0] == 1 or digits[0] == 2:
             exp = exp+(len(digits)-2)
             if len(digits) > 2:
                 digits = increment_digit(digits[:2])
+                # TODO: if rounding down is more than 5% different, round up instead
             unc = Decimal(DecimalTuple(sign=0, digits=(digits), exponent=exp)).quantize(Decimal('1e{}'.format(exp)))
         else:
             exp = exp+(len(digits)-1)
