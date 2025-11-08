@@ -28,7 +28,7 @@ class Value:
   
   def __add__(self, other):
     a, b = check(self, other)
-    v = Value(a.value + b.value, a.uncertainty + b.uncertainty)
+    v = Value(a.value + b.value, a.uncertainty**2 + b.uncertainty**2)
     v.history = (a.history, b.history, 'add')
     return v
   
@@ -37,37 +37,37 @@ class Value:
   
   def __sub__(self, other):
     a, b = check(self, other)
-    v = Value(a.value - b.value, a.uncertainty + b.uncertainty)
+    v = Value(a.value - b.value, a.uncertainty**2 + b.uncertainty**2)
     v.history = (a.history, b.history, 'sub')
     return v
     
   def __rsub__(self, other):
     a, b = check(self, other)
-    v = Value(b.value - a.value, a.uncertainty + b.uncertainty)
+    v = Value(b.value - a.value, a.uncertainty**2 + b.uncertainty**2)
     v.history = (b.history, a.history, 'rsub')
     return v
 
   def __mul__(self, other):
     a, b = check(self, other)
-    v = Value(a.value * b.value, a.value * b.uncertainty + b.value * a.uncertainty)
+    v = Value(a.value * b.value, (a.value * b.uncertainty)**2 + (b.value * a.uncertainty)**2)
     v.history = (a.history, b.history, 'mul')
     return v
     
   def __rmul__(self, other):
     a, b = check(self, other)
-    v = Value(a.value * b.value, a.value * b.uncertainty + b.value * a.uncertainty)
+    v = Value(a.value * b.value, (a.value * b.uncertainty)**2 + (b.value * a.uncertainty)**2)
     v.history = (b.history, a.history, 'rmul')
     return v
   
   def __truediv__(self, other):
     a, b = check(self, other)
-    v = Value(a.value / b.value, (b.value * a.uncertainty - a.value * b.uncertainty) / (b.value ** 2))
+    v = Value(a.value / b.value, (a.uncertainty / b.value)**2 + (a.value * b.uncertainty / (b.value ** 2))**2)
     v.history = (a.history, b.history, 'div')
     return v
   
   def __rtruediv__(self, other):
     a, b = check(self, other)
-    v = Value(b.value / a.value, (a.value * b.uncertainty - b.value * a.uncertainty) / (a.value ** 2))
+    v = Value(b.value / a.value, (b.uncertainty / a.value)**2 + (b.value * a.uncertainty / (a.value ** 2))**2)
     v.history = (b.history, a.history, 'rdiv')
     return v
   
@@ -83,7 +83,7 @@ class Value:
   
   def __pow__(self, power):
     a, b = check(self, power)
-    v = Value(self.value ** b.value, a.value**b.value * (b.value/a.value*a.uncertainty + (Decimal(m.log(a.value))*b.uncertainty if b.uncertainty != 0 else 0)))
+    v = Value(self.value ** b.value, a.value**(2*b.value) * ((b.value/a.value*a.uncertainty)**2 + ((Decimal(m.log(a.value))*b.uncertainty)**2 if b.uncertainty != 0 else 0)))
     v.history = (a.history, b.history, 'pow')
     return v
   
@@ -91,7 +91,7 @@ class Value:
     return f"Value({self.value}, {self.uncertainty}, unit={self.unit})"
 
   def __str__(self):
-    rounded_value, rounded_uncertainty = roundToSignificantFigures(self.value, self.uncertainty)
+    rounded_value, rounded_uncertainty = roundToSignificantFigures(self.value, self.uncertainty.sqrt())
     tuple = rounded_value.as_tuple()
     correct = tuple.exponent+len(tuple.digits)-1
     if abs(correct) >= 1:
@@ -109,7 +109,7 @@ class Value:
     return s
 
   def short(self, unit: bool = True, predecimals: int = 1) -> str:
-    rounded_value, rounded_uncertainty = roundToSignificantFigures(self.value, self.uncertainty)
+    rounded_value, rounded_uncertainty = roundToSignificantFigures(self.value, self.uncertainty.sqrt())
     tuple = rounded_value.as_tuple()
     value = to_non_scientific_string(rounded_value)
     s = ""
