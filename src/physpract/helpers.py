@@ -35,12 +35,14 @@ def getSignificantFigures(uncertainty):
     return unc, exp
 
 def roundToSignificantFigures(value, uncertainty) -> tuple[Decimal, Decimal]:
+    print(value, uncertainty)
     if uncertainty == 0:
         return value, uncertainty
     unc, pos = getSignificantFigures(uncertainty)
     if type(value) != Decimal:
         value = Decimal(value)
     rounded_uncertainty = unc
+    print(value, pos)
     rounded_value = value.quantize(Decimal('1e{}'.format(pos)))
     return rounded_value, rounded_uncertainty
 
