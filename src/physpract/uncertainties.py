@@ -49,25 +49,25 @@ class Value:
 
   def __mul__(self, other):
     a, b = check(self, other)
-    v = Value(a.value * b.value, a.value * b.uncertainty + b.value * a.uncertainty)
+    v = Value(a.value * b.value, abs(a.value * b.uncertainty) + abs(b.value * a.uncertainty))
     v.history = (a.history, b.history, 'mul')
     return v
     
   def __rmul__(self, other):
     a, b = check(self, other)
-    v = Value(a.value * b.value, a.value * b.uncertainty + b.value * a.uncertainty)
+    v = Value(a.value * b.value, abs(a.value * b.uncertainty) + abs(b.value * a.uncertainty))
     v.history = (b.history, a.history, 'rmul')
     return v
   
   def __truediv__(self, other):
     a, b = check(self, other)
-    v = Value(a.value / b.value, (b.value * a.uncertainty - a.value * b.uncertainty) / (b.value ** 2))
+    v = Value(a.value / b.value, (abs(b.value * a.uncertainty) + abs(a.value * b.uncertainty)) / (b.value ** 2))
     v.history = (a.history, b.history, 'div')
     return v
   
   def __rtruediv__(self, other):
     a, b = check(self, other)
-    v = Value(b.value / a.value, (a.value * b.uncertainty - b.value * a.uncertainty) / (a.value ** 2))
+    v = Value(b.value / a.value, (abs(a.value * b.uncertainty) + abs(b.value * a.uncertainty)) / (a.value ** 2))
     v.history = (b.history, a.history, 'rdiv')
     return v
   
@@ -83,7 +83,7 @@ class Value:
   
   def __pow__(self, power):
     a, b = check(self, power)
-    v = Value(self.value ** b.value, a.value**b.value * (b.value/a.value*a.uncertainty + (Decimal(m.log(a.value))*b.uncertainty if b.uncertainty != 0 else 0)))
+    v = Value(self.value ** b.value, abs(a.value**b.value) * (abs(b.value/a.value*a.uncertainty) + (abs(Decimal(m.log(a.value))*b.uncertainty) if b.uncertainty != 0 else 0)))
     v.history = (a.history, b.history, 'pow')
     return v
   
