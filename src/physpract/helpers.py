@@ -48,7 +48,7 @@ def to_non_scientific_string(value: Decimal) -> str:
     exp = value.as_tuple().exponent
     return f'{value:.{abs(exp) if exp < 0 else 0}f}'
 
-def bracket_notation(value: Decimal, uncertainty: Decimal) -> str:
+def bracket_notation(value: Decimal, uncertainty: Decimal, correct: int = 0) -> str:
     vt = value.as_tuple()
     ut = uncertainty.as_tuple()
-    return to_non_scientific_string(uncertainty.scaleb(-ut.exponent) if len(ut.digits) < len(vt.digits) or len(ut.digits) <= -ut.exponent else uncertainty)
+    return to_non_scientific_string(uncertainty.scaleb(-ut.exponent) if ut.exponent < 0 else uncertainty.scaleb(-(correct if correct <= ut.exponent else ut.exponent)))
