@@ -18,6 +18,8 @@ class Value:
     
     self.value = Decimal(value)
     self.uncertainty = abs(Decimal(uncertainty))
+    self.v = self.value
+    self.u = self.uncertainty
     self.unit = None
     self.history = self
 
