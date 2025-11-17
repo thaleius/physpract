@@ -1,6 +1,7 @@
 from decimal import Decimal
 import math as m
 from .helpers import bracket_notation, roundToSignificantFigures, to_non_scientific_string
+from uncertainties.core import Variable
 
 class Value:
   pass
@@ -15,9 +16,13 @@ class Value:
     # if type(value) == str or type(uncertainty) == str:
     #   value = Decimal(value)
     #   uncertainty = Decimal(uncertainty)
-    
-    self.value = Decimal(value)
-    self.uncertainty = abs(Decimal(uncertainty))
+
+    if hasattr(value, 'nominal_value') and hasattr(value, 'std_dev'):
+      self.uncertainty = value.std_dev
+      self.value = value.nominal_value
+    else:
+      self.value = Decimal(value)
+      self.uncertainty = abs(Decimal(uncertainty))
     self.v = self.value
     self.u = self.uncertainty
     self.unit = None
