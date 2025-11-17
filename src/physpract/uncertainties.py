@@ -18,8 +18,8 @@ class Value:
     #   uncertainty = Decimal(uncertainty)
 
     if hasattr(value, 'nominal_value') and hasattr(value, 'std_dev'):
-      self.uncertainty = value.std_dev
-      self.value = value.nominal_value
+      self.uncertainty = Decimal(value.std_dev)
+      self.value = Decimal(value.nominal_value)
     else:
       self.value = Decimal(value)
       self.uncertainty = abs(Decimal(uncertainty))
