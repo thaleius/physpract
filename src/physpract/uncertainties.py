@@ -121,7 +121,7 @@ class Value:
     value = to_non_scientific_string(rounded_value)
     s = ""
     correct = tuple.exponent+len(tuple.digits)-1
-    if abs(correct) >= 1:
+    if abs(correct) > 1:
       if correct > 0:
         correct -= predecimals - 1
       if rounded_uncertainty == 0:
